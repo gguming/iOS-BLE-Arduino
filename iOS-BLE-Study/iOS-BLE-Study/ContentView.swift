@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var bleManager: BLEManager = BLEManager()
+    @StateObject private var bleManager: BLECentralManager = BLECentralManager()
     var body: some View {
-        NavigationView(content: {
+        NavigationStack{
             VStack(spacing: 0.0) {
                 buttonsView
                 peripheralsListView
             }
-        })
+            .navigationDestination(for: PeripheralItem.self) { item in
+                PeripheralDetailView(peripheralItem: item)
+            }
+        }
+        
     }
 }
 
@@ -37,16 +41,31 @@ extension ContentView {
     }
     
     private var peripheralsListView: some View {
-        List(bleManager.discoveredPeripherals, id: \.self) { peripheral in
-            VStack(spacing: 0.0) {
-                Text(peripheral.name ?? "이름 없음")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text(peripheral.identifier.uuidString)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        List(bleManager.discoveredPeripherals, id: \.id) { item in
+            HStack {
+                VStack(spacing: 0.0) {
+                    Text(item.peripheral.name ?? "이름 없음")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(item.id.uuidString)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Button(action: {
+                        if item.isConnected {
+                            bleManager.disconnect(item.peripheral)
+                        } else {
+                            bleManager.connect(item.peripheral)
+                        }
+                    }, label: {
+                        Text(item.isConnected ? "연결완료" : "연결")
+                    })
+                }
+                if item.isConnected {
+                    NavigationLink("상세화면", value: item)
+                }
             }
         }
     }
 }
+
 
 #Preview {
     ContentView()
