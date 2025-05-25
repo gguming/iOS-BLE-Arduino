@@ -14,31 +14,37 @@ struct PeripheralDetailView: View {
             if peripheralItem.serviceItems.isEmpty {
                 Text("No services available.")
             } else {
-                List {
-                    ForEach(peripheralItem.serviceItems, id: \.self) { serviceItem in
-                        Section(header: Text("Service: \(serviceItem.service.uuid.uuidString)")) {
-                            ForEach(serviceItem.characteristics, id: \.uuid) { characteristic in
-                                VStack(alignment: .leading) {
-                                    Text("Characteristic: \(characteristic.uuid.uuidString)")
-                                        .font(.headline)
-                                    
-//                                    Text("Properties: \(characteristic.properties.description)")
-//                                        .font(.subheadline)
-                                    
-                                    // 특성 권한 표시
-                                    if characteristic.properties.contains(.read) {
-                                        Text("Readable")
-                                    }
-                                    if characteristic.properties.contains(.write) {
-                                        Text("Writable")
-                                    }
-                                    if characteristic.properties.contains(.notify) {
-                                        Text("Notifiable")
-                                    }
-                                }
-                                .padding(.vertical, 5)
+                detailView
+            }
+        }
+    }
+}
+
+extension PeripheralDetailView {
+    private var detailView: some View {
+        List {
+            ForEach(peripheralItem.serviceItems, id: \.self) { serviceItem in
+                Section(header: Text("Service: \(serviceItem.service.uuid.uuidString)")) {
+                    ForEach(serviceItem.characteristics, id: \.uuid) { characteristic in
+                        VStack(alignment: .leading) {
+                            Text("Characteristic: \(characteristic.uuid.uuidString)")
+                                .font(.headline)
+                            
+                            Text("Properties: \(characteristic.properties)")
+                                .font(.subheadline)
+                            
+                            //특성 권한 표시
+                            if characteristic.properties.contains(.read) {
+                                Text("Readable")
+                            }
+                            if characteristic.properties.contains(.write) {
+                                Text("Writable")
+                            }
+                            if characteristic.properties.contains(.notify) {
+                                Text("Notifiable")
                             }
                         }
+                        .padding(.vertical, 5)
                     }
                 }
             }
