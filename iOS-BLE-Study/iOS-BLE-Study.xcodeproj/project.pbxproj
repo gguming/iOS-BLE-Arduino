@@ -10,9 +10,24 @@
 		A43B61402DDDF50D00F48448 /* iOS-BLE-Study.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS-BLE-Study.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A44F8F842DE538BA006AA66B /* Exceptions for "iOS-BLE-Study" folder in "iOS-BLE-Study" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"BLE-Arduino/Domain/PeripheralEntity.swift",
+				"BLE-Arduino/Domain/UseCase/Protocol/ConnectUseCase.swift",
+				BLEManager/BLEArduinoManager.swift,
+			);
+			target = A43B613F2DDDF50D00F48448 /* iOS-BLE-Study */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		A43B61422DDDF50D00F48448 /* iOS-BLE-Study */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A44F8F842DE538BA006AA66B /* Exceptions for "iOS-BLE-Study" folder in "iOS-BLE-Study" target */,
+			);
 			path = "iOS-BLE-Study";
 			sourceTree = "<group>";
 		};

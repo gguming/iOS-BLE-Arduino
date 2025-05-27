@@ -22,6 +22,14 @@ struct ContentView: View {
                 }, label: {
                     Text("주변장치 테스트")
                 })
+                
+                NavigationLink(destination: {
+                    let repository = BLEArduinoManager()
+                    let viewModel = ScanViewModel(scanUseCase: ScanUseCase(centralRepository: repository))
+                    ScanView(viewModel: viewModel)
+                }, label: {
+                    Text("아두이노 연결")
+                })
             }
         }
         

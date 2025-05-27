@@ -11,7 +11,8 @@ struct PeripheralItem: Identifiable, Equatable, Hashable {
     let id: UUID
     let peripheral: CBPeripheral
     var isConnected: Bool = false
-    private(set) var serviceItems: [ServiceItem] = []  // 서비스별 특성을 관리하는 배열
+    /// 서비스별 특성을 관리하는 배열
+    private(set) var serviceItems: [ServiceItem] = []
     
     init(id: UUID, peripheral: CBPeripheral) {
         self.id = id
@@ -28,7 +29,6 @@ struct PeripheralItem: Identifiable, Equatable, Hashable {
     
     // 특성 목록을 서비스별로 설정하는 메서드
     mutating func setCharacteristics(for service: CBService, characteristics: [CBCharacteristic]) {
-        // 각 서비스에 해당하는 ServiceItem을 찾아서 특성을 설정
         if let index = serviceItems.firstIndex(where: { $0.service.uuid == service.uuid }) {
             serviceItems[index].characteristics = characteristics
         }
