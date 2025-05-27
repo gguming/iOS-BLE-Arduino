@@ -17,6 +17,16 @@ struct ScanView: View {
             buttonsView
             peripheralsListView
         }
+        .sheet(item: $selectedPeripheral,
+               onDismiss: {
+            viewModel.startScan()
+        }) { item in
+            let viewModel = ControlViewModel(connectUseCase: ConnectUseCase(centralRepository: BLEArduinoManager.shared),
+                                             ledControlUseCase: LEDControlUseCase(centralRepository: BLEArduinoManager.shared),
+                                             peripheralInfo: item)
+            ControlView(viewModel: viewModel)
+            
+        }
     }
 }
 
@@ -49,6 +59,12 @@ extension ScanView {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
+                Button(action: {
+                    selectedPeripheral = item
+                    viewModel.stopScan()
+                }, label: {
+                    Text("컨트롤 화면")
+                })
             }
         }
     }

@@ -8,15 +8,17 @@
 import CoreBluetooth
 
 final class BLEArduinoManager: NSObject {
+    static let shared = BLEArduinoManager()
     private var centralManager: CBCentralManager = CBCentralManager()
     
     private var discoveredPeripheralContinuation: AsyncStream<PeripheralEntity>.Continuation?
     private var managerStateContinuation: AsyncStream<CBManagerState>.Continuation?
     private var connectionContinuation: CheckedContinuation<PeripheralEntity, Error>?
     private var disconnectionContinuation: CheckedContinuation<UUID, Error>?
+    private var writeContinuation: CheckedContinuation<[UInt8], Error>?
     private var cachedPeripheral: [UUID: PeripheralEntity] = [:]
     
-    override init() {
+    override private init() {
         super.init()
         centralManager = CBCentralManager(delegate: self,
                                           queue: nil)
@@ -75,6 +77,17 @@ extension BLEArduinoManager: CentralRepositoryProtocol {
     
     func setNorify(isOn: Bool, to peripheral: CBPeripheral, for characteristic: CBCharacteristic) {
         peripheral.setNotifyValue(isOn, for: characteristic)
+    }
+    
+    func writeData(value: Data, to peripheral: CBPeripheral, for characteristic: CBCharacteristic) {
+        peripheral.writeValue(value, for: characteristic, type: .withoutResponse)
+    }
+    
+    func writeDataWithResponse(value: Data, to peripheral: CBPeripheral, for characteristic: CBCharacteristic) async throws -> [UInt8] {
+        return try await withCheckedThrowingContinuation { continuation in
+            writeContinuation = continuation
+            peripheral.writeValue(value, for: characteristic, type: .withResponse)
+        }
     }
     
     
@@ -184,6 +197,17 @@ extension BLEArduinoManager: CBPeripheralDelegate {
             info.isConnected = true
             connectionContinuation?.resume(returning: info)
             connectionContinuation = nil
+            cachedPeripheral[peripheral.identifier] = nil 
         }
+    }
+    
+    func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: (any Error)?) {
+        if let error {
+            writeContinuation?.resume(throwing: error)
+            writeContinuation = nil
+        }
+        let dataBytes: [UInt8] = characteristic.value?.map { $0 } ?? []
+        writeContinuation?.resume(returning:  dataBytes)
+        writeContinuation = nil
     }
 }

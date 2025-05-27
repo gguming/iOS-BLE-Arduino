@@ -8,5 +8,5 @@
 import CoreBluetooth
 
 public protocol LEDControlUseCaseProtocol {
-    func control(to peripheral: CBPeripheral, isOn: Bool)
+    func control(to peripheral: CBPeripheral, isOn: Bool, for characteristic: CBCharacteristic) async throws -> Bool
 }

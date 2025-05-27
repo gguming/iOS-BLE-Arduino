@@ -26,7 +26,7 @@ extension ScanViewModel {
     func startScan() {
         scanTask?.cancel()
         scanTask = Task {
-            for await peripheral in scanUseCase.startScan(nil) {
+            for await peripheral in scanUseCase.startScan([ArduinoUUID.ledService]) {
                 if !discoveredPeripherals.contains(where: { $0.id == peripheral.id }) {
                     discoveredPeripherals.append(peripheral)
                 }

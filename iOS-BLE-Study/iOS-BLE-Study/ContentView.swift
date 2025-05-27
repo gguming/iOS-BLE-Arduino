@@ -24,8 +24,8 @@ struct ContentView: View {
                 })
                 
                 NavigationLink(destination: {
-                    let repository = BLEArduinoManager()
-                    let viewModel = ScanViewModel(scanUseCase: ScanUseCase(centralRepository: repository))
+//                    let repository = BLEArduinoManager()
+                    let viewModel = ScanViewModel(scanUseCase: ScanUseCase(centralRepository: BLEArduinoManager.shared))
                     ScanView(viewModel: viewModel)
                 }, label: {
                     Text("아두이노 연결")
